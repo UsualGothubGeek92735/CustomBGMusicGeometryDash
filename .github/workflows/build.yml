@@ -1,0 +1,50 @@
+name: Build Geode Mod
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out this repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Python (needed for the Geode CLI)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Geode CLI
+        run: pip install geode.cli
+
+      - name: Download and unpack the Geode SDK
+        shell: pwsh
+        run: |
+          $ver = (Invoke-RestMethod https://api.github.com/repos/geode-sdk/geode/releases/latest).tag_name
+          Write-Host "Using Geode SDK release $ver"
+          Invoke-WebRequest -Uri "https://github.com/geode-sdk/geode/releases/download/$ver/geode-sdk-win.zip" -OutFile geode-sdk.zip
+          Expand-Archive geode-sdk.zip -DestinationPath geode-sdk
+          echo "GEODE_SDK=$pwd\geode-sdk" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Configure
+        run: cmake -B build -A x64
+
+      - name: Build (Release)
+        run: cmake --build build --config Release --parallel
+
+      - name: Package into .geode
+        shell: pwsh
+        run: geode package new build --config Release
+
+      - name: Upload the built mod
+        uses: actions/upload-artifact@v4
+        with:
+          name: CustomBGMusic-geode
+          path: '**/*.geode'
+          if-no-files-found: error
