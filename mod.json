@@ -1,0 +1,35 @@
+{
+    "geode": "3.9.1",
+    "version": "v1.0.0",
+    "id": "com.yourname.custombgmusic",
+    "name": "Custom BG Music",
+    "developer": "YourName",
+    "description": "Replace Geometry Dash's background music with any MP3 from your own music library, without breaking other mods.",
+    "repository": "https://github.com/yourname/custombgmusic",
+    "gd": {
+        "win": "2.2074",
+        "android": "2.2074",
+        "mac": "2.2074"
+    },
+    "dependencies": [],
+    "settings": {
+        "library-folder": {
+            "name": "Music Library Folder",
+            "description": "Folder (inside the mod's save data) where your MP3 files live.",
+            "type": "string",
+            "default": "GD Music Library"
+        },
+        "enabled": {
+            "name": "Enable Custom Music",
+            "description": "Turn custom background music on or off.",
+            "type": "bool",
+            "default": true
+        },
+        "apply-to-menu": {
+            "name": "Apply to Menus",
+            "description": "Also replace music in the main menu, not just levels.",
+            "type": "bool",
+            "default": true
+        }
+    }
+}
